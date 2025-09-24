@@ -11,7 +11,7 @@ import Foundation
 public class CoreDataManager {
     static let shared = CoreDataManager()
     
-     init() {}
+    init() {}
     
     lazy var container: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "FinancialTracker")
@@ -37,12 +37,6 @@ public class CoreDataManager {
         for t in transactions {
             let cd = CDTransaction(context: context)
             cd.id = t.id
-            cd.amount = t.amount
-            cd.currency = t.currency
-            cd.date = t.date
-            cd.isExpense = t.isExpense
-            cd.merchant = t.merchant
-            cd.transactionDescription = t.description
         }
         
         do {
@@ -52,25 +46,7 @@ public class CoreDataManager {
         }
     }
     
-    func fetchAllTransactions() -> [TransactionModel] {
-        let request: NSFetchRequest<CDTransaction> = CDTransaction.fetchRequest()
-        do {
-            let cds = try context.fetch(request)
-            return cds.compactMap { cd in
-                guard let id = cd.id else { return nil }
-                return TransactionModel(
-                    id: id,
-                    amount: cd.amount,
-                    description: cd.transactionDescription,
-                    currency: cd.currency ?? "KES",
-                    date: cd.date ?? Date(),
-                    isExpense: cd.isExpense,
-                    merchant: cd.merchant
-                )
-            }
-        } catch {
-            print("Failed to load transactions from Core Data: \(error)")
-            return []
-        }
+    func fetchAllTransactions()   {
     }
+    
 }

@@ -1,3 +1,11 @@
+//
+//  ExchangeServiceProtocol.swift
+//  FinancialTracker
+//
+//  Created by Kibichy on 24/09/2025.
+//
+
+
 import Foundation
 
 protocol ExchangeServiceProtocol {
@@ -12,10 +20,8 @@ struct ExchangeService: ExchangeServiceProtocol {
 
         let (data, _) = try await URLSession.shared.data(from: url)
 
-        // Debug raw response
         if let raw = String(data: data, encoding: .utf8) {
             print("DEBUG: Raw response → \(raw)")
-            // Stop decoding if not valid JSON
             guard raw.trimmingCharacters(in: .whitespacesAndNewlines).first == "{" else {
                 throw URLError(.badServerResponse)
             }

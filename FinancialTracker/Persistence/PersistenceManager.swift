@@ -1,3 +1,13 @@
+//
+//  PersistenceManager.swift
+//  FinancialTracker
+//
+//  Created by Kibichy on 24/09/2025.
+//
+
+import Foundation
+
+
 class PersistenceManager: ObservableObject {
     @Published var transactions: [TransactionModel] = []
     @Published var currentBalance: Double = 152500.00
@@ -23,13 +33,11 @@ class PersistenceManager: ObservableObject {
     }
     
     func loadData() {
-        // Load transactions
         if let data = UserDefaults.standard.data(forKey: transactionsKey),
            let decoded = try? JSONDecoder().decode([TransactionModel].self, from: data) {
             transactions = decoded
         }
         
-        // Load balance — only use default if key has never been set
         if UserDefaults.standard.object(forKey: balanceKey) != nil {
             currentBalance = UserDefaults.standard.double(forKey: balanceKey)
         }
@@ -46,14 +54,12 @@ class PersistenceManager: ObservableObject {
     func addTransaction(_ transaction: TransactionModel) {
         transactions.append(transaction)
         
-        if transaction.isExpense {
-            currentBalance -= transaction.amount
-            moneyOut += transaction.amount
-        } else {
-            currentBalance += transaction.amount
-            moneyIn += transaction.amount
+       
+            currentBalance += transaction.rate
+        
+        moneyIn += transaction.rate
         }
         
-        saveData()
-    }
+    
+    
 }

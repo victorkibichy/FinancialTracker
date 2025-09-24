@@ -1,3 +1,12 @@
+//
+//  ExchangeTransaction.swift
+//  FinancialTracker
+//
+//  Created by Kibichy on 24/09/2025.
+//
+
+import Foundation
+
 struct ExchangeTransaction: Codable, Identifiable {
     let id = UUID()
     let transactionId: String
@@ -12,4 +21,10 @@ struct ExchangeTransaction: Codable, Identifiable {
         case transactionId = "id"
         case date, baseCurrency, targetCurrency, rate, source, status
     }
+}
+
+
+
+struct ExchangeTransactionResponse: Codable {
+    let transactions: [ExchangeTransaction]
 }

@@ -7,9 +7,9 @@
 
 
 class CurrencyService {
-    private let apiClient: APIClientProtocol
+    private let apiClient: TransactionService
     
-    init(apiClient: APIClientProtocol) {
+    init(apiClient: TransactionService) {
         self.apiClient = apiClient
     }
     
@@ -17,7 +17,5 @@ class CurrencyService {
         return try await apiClient.fetchTransactions()
     }
     
-    func fetchExchangeRates() async throws -> [String: Double] {
-        return try await apiClient.fetchExchangeRates()
-    }
+  
 }

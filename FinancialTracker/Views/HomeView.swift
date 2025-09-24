@@ -1,3 +1,13 @@
+//
+//  HomeView.swift
+//  FinancialTracker
+//
+//  Created by Kibichy on 24/09/2025.
+//
+
+
+import SwiftUI
+
 struct HomeView: View {
     @EnvironmentObject var persistenceManager: PersistenceManager
     @State private var showingAddTransaction = false
@@ -70,7 +80,16 @@ struct HomeView: View {
                 .padding(20)
                 .background(
                     RoundedRectangle(cornerRadius: 16)
-                        .fill(Color.financialDashboard.opacity(0.8))
+                        .fill(
+                            LinearGradient(
+                                gradient: Gradient(colors: [
+                                    Color.financialDashboard,
+                                    Color(hex: "C8E6A3")          
+                                ]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
                 )
                 .padding(.horizontal)
                 
@@ -115,3 +134,4 @@ struct HomeView: View {
         }
     }
 }
+

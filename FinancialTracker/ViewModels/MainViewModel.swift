@@ -1,49 +1,56 @@
+//
+//  MainViewModel.swift
+//  FinancialTracker
+//
+//  Created by Kibichy on 24/09/2025.
+//
+
 import Foundation
 import SwiftUI
 
 @MainActor
 class MainViewModel: ObservableObject {
     @Published var transactions: [TransactionModel] = []
-    @Published var exchangeRates: [String: Double] = [:]
+    @Published var exchangeRates = [:]
     @Published var searchText = ""
     
-    private let currencyService: CurrencyService
+    private let apiClient: TransactionService
     private let coreDataManager: CoreDataManager
     private var debouncer = Debouncer(delay: 0.5)
+    private var allTransactions: [TransactionModel] = []
     
-    init(currencyService: CurrencyService, coreDataManager: CoreDataManager) {
-        self.currencyService = currencyService
+    init(apiClient: TransactionService, coreDataManager: CoreDataManager) {
+        self.apiClient = apiClient
         self.coreDataManager = coreDataManager
     }
     
     func loadData() {
         Task {
             do {
-                let fetched = try await currencyService.fetchTransactions()
+                let fetched = try await apiClient.fetchTransactions()
                 await MainActor.run {
+                    self.allTransactions = fetched
                     self.transactions = fetched
                     coreDataManager.save(transactions: fetched)
                 }
             } catch {
-                print("Error loading transactions: $error)")
-                await MainActor.run {
-                   
-                }
+                print("❌ Failed to load transactions: \(error)")
+               
+                
             }
             
+           
             do {
-                let rates = try await currencyService.fetchExchangeRates()
-                await MainActor.run {
-                    self.exchangeRates = rates
-                }
+                let rates = try await apiClient.fetchTransactions()
+                await MainActor.run {}
             } catch {
-                print("Error loading exchange rates: $error)")
+                print("❌ Failed to load exchange rates: \(error)")
             }
         }
     }
     
     func loadFromPersistence() {
-      
+        
     }
     
     func refreshData(completion: (() -> Void)? = nil) {
@@ -56,8 +63,5 @@ class MainViewModel: ObservableObject {
         }
     }
     
-    func searchTransactions() {
-        debouncer.debounce {
-        }
-    }
+    func searchTransactions() {}
 }

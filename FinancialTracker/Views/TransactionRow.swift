@@ -1,3 +1,14 @@
+//
+//  TransactionRow.swift
+//  FinancialTracker
+//
+//  Created by Kibichy on 24/09/2025.
+//
+
+import SwiftUICore
+import SwiftUI
+
+
 struct TransactionRow: View {
     let transaction: ExchangeTransaction
     

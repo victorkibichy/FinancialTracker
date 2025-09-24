@@ -1,3 +1,13 @@
+//
+//  AddTransactionView.swift
+//  FinancialTracker
+//
+//  Created by Kibichy on 24/09/2025.
+//
+
+import SwiftUI
+
+
 struct AddTransactionView: View {
     @EnvironmentObject var persistenceManager: PersistenceManager
     @Environment(\.presentationMode) var presentationMode

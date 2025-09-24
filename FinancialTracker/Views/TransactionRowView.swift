@@ -15,11 +15,11 @@ struct TransactionRowView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text(transaction.currency)
+                Text(transaction.baseCurrency)
                     .font(.headline)
                     .foregroundColor(.primary)
                 
-                Text(transaction.date, style: .date)
+                Text(transaction.date)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -29,7 +29,8 @@ struct TransactionRowView: View {
             Text(transactionModifier.formattedAmount())
                 .font(.title2)
                 .fontWeight(.semibold)
-                .foregroundColor(transaction.amount >= 0 ? .green : .red)
+                .foregroundColor(transaction.rate
+                                 >= 0 ? .green : .red)
         }
         .padding(.vertical, 6)
     }

@@ -1,3 +1,11 @@
+//
+//  ExchangeRateViewModel.swift
+//  FinancialTracker
+//
+//  Created by Kibichy on 24/09/2025.
+//
+
+
 import Foundation
 
 @MainActor
@@ -6,23 +14,26 @@ class ExchangeRateViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
 
-    func fetchExchangeRates() async {
-        guard let url = URL(string: "https://victork.free.beeceptor.com/exchangeRtes") else {
-            errorMessage = "Invalid URL"
-            return
-        }
+    private let service: ExchangeServiceProtocol
 
+    init(service: ExchangeServiceProtocol = ExchangeService()) {
+        self.service = service
+    }
+
+    func fetchExchangeRates() async {
         isLoading = true
-        errorMessage = nil
+        defer { isLoading = false }
 
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let decoded = try JSONDecoder().decode(ExchangeResponse.self, from: data)
-            self.exchangeRates = decoded.pairs
+            self.exchangeRates = try await service.fetchExchangeRates()
         } catch {
-            errorMessage = "Failed to load: \(error.localizedDescription)"
-        }
+            print("DEBUG: Fetch error → \(error)")
+            errorMessage = "Failed to load rates, showing sample data."
 
-        isLoading = false
+            // ✅ Fallback mock data
+            self.exchangeRates = [
+                ExchangePair(id: "1", pair: "KES/USD", rate: 0.0075)
+            ]
+        }
     }
 }

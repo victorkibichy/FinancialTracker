@@ -1,28 +1,34 @@
+//
+//  RecentTransactionViewModel.swift
+//  FinancialTracker
+//
+//  Created by Kibichy on 24/09/2025.
+//
+
+import Foundation
+import Combine
+
 @MainActor
 class RecentTransactionViewModel: ObservableObject {
-    @Published var transactions: [ExchangeTransaction] = []
-    @Published var isLoading = false
-    @Published var error: String? = nil
-    
-//    private let url = URL(string: "https://victork.free.beeceptor.com/transactions")!
-    
-    func fetchTransactions() {
-        guard let url = URL(string: "https://victork.free.beeceptor.com/transactions") else {
-            self.errorMessage = "Invalid transactions URL"
-            return
-        }
-        URLSession.shared.dataTaskPublisher(for: url)
-            .map { $0.data }
-            .decode(type: [Transaction].self, decoder: JSONDecoder())
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                if case .failure(let err) = completion {
-                    self.errorMessage = "Transactions error: \(err.localizedDescription)"
-                }
-            }, receiveValue: { resp in
-                self.transactions = resp
-            })
-            .store(in: &cancellables)
+    @Published var transactions: [TransactionModel] = []
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String?
+
+    private let service: TransactionServiceProtocol
+
+    init(service: TransactionServiceProtocol = TransactionService()) {
+        self.service = service
     }
 
+    func fetchTransactions() async {
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            let fetched = try await service.fetchTransactions()
+            self.transactions = fetched
+        } catch {
+            self.errorMessage = "Failed to load: \(error.localizedDescription)"
+        }
+    }
 }

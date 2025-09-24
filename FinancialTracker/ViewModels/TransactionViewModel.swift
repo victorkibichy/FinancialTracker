@@ -1,7 +1,16 @@
-// MARK: - ViewModel
+//
+//  TransactionViewModel.swift
+//  FinancialTracker
+//
+//  Created by Kibichy on 24/09/2025.
+//
+
+import Foundation
+import SwiftUI
+
 @MainActor
 class TransactionViewModel: ObservableObject {
-    @Published var transactions: [Transaction] = []
+    @Published var transactions: [TransactionModel] = []
     @Published var isLoading = false
     @Published var error: String? = nil
     

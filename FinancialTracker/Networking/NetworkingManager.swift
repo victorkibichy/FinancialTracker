@@ -1,21 +1,31 @@
+//
+//  NetworkingManager.swift
+//  FinancialTracker
+//
+//  Created by Kibichy on 24/09/2025.
+//
+
+
+import Foundation
+import Combine
+
+
 import Foundation
 import Combine
 
 class NetworkingManager {
-    static let manager = URLSession(configuration: .default)
-    
     static func download(url: URL) -> AnyPublisher<Data, URLError> {
-        return manager.dataTaskPublisher(for: url)
+        URLSession.shared.dataTaskPublisher(for: url)
             .map(\.data)
             .eraseToAnyPublisher()
     }
     
-    static func handleCompletion(completion: Subscribers.Completion<URLError>) {
+    static func handleCompletion(completion: Subscribers.Completion<Error>) {
         switch completion {
         case .finished:
             break
         case .failure(let error):
-            print("Networking error: \(error)")
+            print("DEBUG: Networking error → \(error.localizedDescription)")
         }
     }
 }
