@@ -116,12 +116,13 @@ struct AddTransactionView: View {
                 Spacer()
                 
                 Button(action: addTransaction) {
+                    
                     Text("Add Transaction")
                         .foregroundColor(.white)
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.green)
+                        .background(Color.vibrantGreen)
                         .cornerRadius(12)
                 }
             }
