@@ -41,10 +41,12 @@ struct FinancialView: View{
 
 #Preview {
     ContentView()
-        .environmentObject(MainViewModel(
-            currencyService: CurrencyService(apiClient: APIClient()),
-            coreDataManager: CoreDataManager()
-        ))
+        .environmentObject(
+            MainViewModel(
+                apiClient: APIClient(),
+                coreDataManager: CoreDataManager.shared
+            )
+        )
 }
 
 private let itemFormatter: DateFormatter = {
