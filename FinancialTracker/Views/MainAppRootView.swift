@@ -40,10 +40,10 @@ struct FinancialView: View{
 }
 
 #Preview {
-    ContentView()
+    MainAppRootView()
         .environmentObject(
             MainViewModel(
-                apiClient: APIClient(),
+                apiClient: TransactionService(),
                 coreDataManager: CoreDataManager.shared
             )
         )
@@ -57,5 +57,5 @@ private let itemFormatter: DateFormatter = {
 }()
 
 #Preview {
-    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    MainAppRootView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
