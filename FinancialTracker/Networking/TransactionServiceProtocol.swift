@@ -13,17 +13,33 @@ protocol TransactionServiceProtocol {
 
 struct TransactionService: TransactionServiceProtocol {
     func fetchTransactions() async throws -> [TransactionModel] {
-        guard let url = URL(string: "https://victork.free.beeceptor.com/transactions") else {
+        guard let url = URL(string: "https://victork-free.free.beeceptor.com/transactions") else {
             throw URLError(.badURL)
         }
-
-        let (data, _) = try await URLSession.shared.data(from: url)
-
-        if let raw = String(data: data, encoding: .utf8) {
-            print("DEBUG: Raw response → \(raw)")
+        
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        // Check HTTP status
+        guard let httpResponse = response as? HTTPURLResponse,
+              (200...299).contains(httpResponse.statusCode) else {
+            throw URLError(.badServerResponse)
         }
-
-        let decoded = try JSONDecoder().decode(TransactionResponse.self, from: data)
-        return decoded.transactions
+        
+        // Optional: Debug raw response
+        if let rawString = String(data: data, encoding: .utf8) {
+            print("DEBUG: Raw response → \(rawString)")
+        }
+        
+        // Check if response is HTML (Beeceptor default page)
+        if String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("<!DOCTYPE") == true ||
+           String(data: data, encoding: .utf8)?.contains("Hey ya! Great to see you here") == true {
+            print("⚠️ Received Beeceptor default page — configure your mock endpoint!")
+            throw URLError(.badServerResponse)
+        }
+        
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601 // if you switch `date` to `Date` type
+        
+        return try decoder.decode([TransactionModel].self, from: data)
     }
 }
